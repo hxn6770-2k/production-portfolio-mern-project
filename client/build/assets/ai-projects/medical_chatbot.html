@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medical Chatbot | Rule-based + LLM Hybrid</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f7fb;
+      color: #333;
+    }
+    header {
+      background-color: #10375c;
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h2 {
+      color: #1a2b4c;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.4rem;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .code-block {
+      background-color: #1e1e1e;
+      color: #dcdcdc;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .tag {
+      background-color: #e0ecf9;
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #10375c;
+      color: #fff;
+      margin-top: 3rem;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Medical Chatbot: Rule-based + LLM Hybrid</h1>
+  <p>Health Query Assistant • GPT-2 Fallback • Symptom Checker</p>
+</header>
+
+<div class="container">
+
+  <h2>💬 Project Overview</h2>
+  <p>
+    This chatbot simulates a basic medical assistant that handles symptom-related queries using a mix of rule-based logic and language models. It can suggest likely causes, advise next steps, or generate general responses using GPT-2.
+  </p>
+
+  <h2>🧪 Python Implementation</h2>
+  <p>
+    The chatbot uses both hard-coded logic for known symptom patterns and a Hugging Face LLM for general conversation. This hybrid structure ensures both reliability and flexibility.
+  </p>
+
+  <span class="tag">1. Load GPT-2 Pipeline</span>
+  <div class="code-block">
+<pre><code>from transformers import pipeline
+
+# Load GPT-2 text generation model
+qa = pipeline("text-generation", model="gpt2")
+</code></pre>
+  </div>
+
+  <span class="tag">2. Rule-based Symptom Checker</span>
+  <div class="code-block">
+<pre><code>def rule_based_response(user_input):
+    if "fever" in user_input.lower() and "cough" in user_input.lower():
+        return "It could be a respiratory infection. Monitor symptoms and consider seeing a doctor if it worsens."
+    elif "headache" in user_input.lower() and "nausea" in user_input.lower():
+        return "These may be signs of a migraine. Try rest and hydration, and consult a physician if persistent."
+    else:
+        return None
+</code></pre>
+  </div>
+
+  <span class="tag">3. Main Chat Loop</span>
+  <div class="code-block">
+<pre><code>print("Welcome to MedBot! Ask your symptom-related questions. Type 'exit' to quit.")
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "exit":
+        break
+
+    response = rule_based_response(user_input)
+    if response is None:
+        response = qa(user_input, max_length=50, num_return_sequences=1)[0]["generated_text"]
+
+    print("MedBot:", response)
+</code></pre>
+  </div>
+
+  <h2>📈 Key Features</h2>
+  <ul>
+    <li>🧠 Rule-based logic for common symptom patterns</li>
+    <li>🗣 GPT-2 fallback for flexible natural language replies</li>
+    <li>📚 Extendable to use clinical databases and APIs</li>
+  </ul>
+
+  <h2>🔗 Future Extensions</h2>
+  <ul>
+    <li>Use BioGPT, MedAlpaca, or ChatGPT API for domain-specific accuracy</li>
+    <li>Integrate SNOMED CT or UMLS for medical vocabulary support</li>
+    <li>Connect with electronic health record (EHR) systems via FHIR</li>
+    <li>Build into a mobile/web app with voice interaction</li>
+  </ul>
+
+</div>
+
+<footer>
+  © 2025 | Medical Chatbot Project | Vivian Nguyen
+</footer>
+
+</body>
+</html>

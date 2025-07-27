@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stress Level Detection | Emotion-based AI</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f7fb;
+      color: #333;
+    }
+    header {
+      background-color: #283e4a;
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h2 {
+      color: #1a2b4c;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.4rem;
+    }
+    p {
+      line-height: 1.6;
+    }
+    ul {
+      margin-left: 1.2rem;
+    }
+    .code-block {
+      background-color: #1e1e1e;
+      color: #dcdcdc;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .tag {
+      background-color: #e0ecf9;
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #283e4a;
+      color: #fff;
+      margin-top: 3rem;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Stress Level Detection using Emotion Classification</h1>
+  <p>Text Input • Emotion Recognition • Mental Health Monitoring</p>
+</header>
+
+<div class="container">
+
+  <h2>🧠 Project Description</h2>
+  <p>
+    This project demonstrates a simple AI-based tool that detects potential stress levels from a user’s text input using emotional sentiment classification. It simulates a mental wellness check-in experience and leverages a pretrained BERT model to identify emotions that might signal stress.
+  </p>
+
+  <h2>📦 Tools & Model</h2>
+  <ul>
+    <li><strong>Model:</strong> <code>bhadresh-savani/distilbert-base-uncased-emotion</code></li>
+    <li><strong>Library:</strong> Hugging Face Transformers</li>
+    <li><strong>Classification target:</strong> Emotion labels like joy, sadness, anger, fear</li>
+  </ul>
+
+  <h2>🧪 Python Implementation</h2>
+
+  <span class="tag">1. Load Emotion Classifier</span>
+  <div class="code-block">
+<pre><code>from transformers import pipeline
+
+# Load emotion classification pipeline
+classifier = pipeline("text-classification", model="bhadresh-savani/distilbert-base-uncased-emotion", top_k=1)</code></pre>
+  </div>
+
+  <span class="tag">2. Simulated Interaction</span>
+  <div class="code-block">
+<pre><code>print("Stress Check-In Tool: Type how you're feeling right now. Type 'exit' to quit.\\n")
+
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "exit":
+        break
+
+    # Predict emotional state
+    result = classifier(user_input)[0]
+    emotion = result["label"]
+    confidence = result["score"]
+
+    # Define stress-related emotions
+    stress_labels = ["anger", "fear", "sadness", "disgust", "anxiety"]
+
+    if emotion in stress_labels:
+        print(f"Detected Emotion: {emotion.upper()} (Stress likely) [Confidence: {confidence:.2f}]")
+    else:
+        print(f"Detected Emotion: {emotion.capitalize()} (No stress detected) [Confidence: {confidence:.2f}]")
+
+    print("-" * 60)</code></pre>
+  </div>
+
+  <h2>✅ What It Does</h2>
+  <ul>
+    <li>Accepts user’s free-text input (e.g., check-in, journal entry)</li>
+    <li>Uses an emotion model to classify the dominant feeling</li>
+    <li>Flags stress-related emotions like sadness, anger, or fear</li>
+  </ul>
+
+  <h2>📈 Explanation</h2>
+  <p>
+    The model uses a BERT variant fine-tuned on emotion-tagged datasets to predict emotions in text. Stress-related emotions are identified based on known psychological associations. While not a clinical diagnosis tool, it helps simulate digital mental health screening.
+  </p>
+
+  <h2>🔗 Potential Extensions</h2>
+  <ul>
+    <li>Incorporate multi-modal inputs (voice tone, facial expressions, biosignals)</li>
+    <li>Provide real-time coping suggestions (meditation, journaling prompts)</li>
+    <li>Integrate with workplace wellness dashboards or chatbots</li>
+    <li>Use clinical datasets like WESAD, DEAP, SEED for sensor-based stress modeling</li>
+  </ul>
+
+</div>
+
+<footer>
+  © 2025 | Stress Detection Project | Vivian Nguyen
+</footer>
+
+</body>
+</html>

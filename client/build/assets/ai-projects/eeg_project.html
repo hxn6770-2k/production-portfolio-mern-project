@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EEG Signal Processing | 1D CNN Project</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f7fb;
+      color: #333;
+    }
+    header {
+      background-color: #0d1b2a;
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h2 {
+      color: #1a2b4c;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.4rem;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .code-block {
+      background-color: #1e1e1e;
+      color: #dcdcdc;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .tag {
+      background-color: #e0ecf9;
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #0d1b2a;
+      color: #fff;
+      margin-top: 3rem;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>EEG Signal Processing: 1D CNN Classification</h1>
+  <p>Simulated EEG Signals • Binary Classification • Deep Learning</p>
+</header>
+
+<div class="container">
+
+  <h2>🧠 Project Description</h2>
+  <p>
+    EEG (Electroencephalogram) signals represent brain activity. This project simulates EEG signals for binary classification (normal vs epileptic), using a 1D Convolutional Neural Network (CNN) to learn from multichannel time-series data.
+  </p>
+
+  <h2>📊 Dataset</h2>
+  <p>
+    We simulate a dataset with 14 channels and 128 time steps per sample. Each EEG sample is randomly generated to resemble either normal (low-noise) or epileptic (noisy) brainwave patterns.
+  </p>
+
+  <p><strong>Future extension:</strong> You can adapt this pipeline to real-world datasets like:</p>
+  <ul>
+    <li>TUH EEG Seizure Corpus</li>
+    <li>CHB-MIT Scalp EEG Dataset</li>
+  </ul>
+
+  <h2>🧪 Code Implementation</h2>
+  <span class="tag">1. Simulated EEG Dataset</span>
+  <div class="code-block">
+<pre><code>class EEGDataset(Dataset):
+    def __init__(self, num_samples=200, channels=14, seq_len=128):
+        self.data, self.labels = [], []
+        for _ in range(num_samples):
+            if random.random() &lt; 0.5:
+                signal = np.random.normal(0, 0.1, (channels, seq_len))
+                label = 0
+            else:
+                signal = np.random.normal(1, 0.5, (channels, seq_len))
+                label = 1
+            self.data.append(torch.tensor(signal, dtype=torch.float32))
+            self.labels.append(label)
+    def __len__(self): return len(self.data)
+    def __getitem__(self, idx): return self.data[idx], self.labels[idx]
+</code></pre>
+  </div>
+
+  <span class="tag">2. EEGNet (1D CNN)</span>
+  <div class="code-block">
+<pre><code>class EEGNet(nn.Module):
+    def __init__(self, channels=14, seq_len=128):
+        super().__init__()
+        self.conv1 = nn.Conv1d(channels, 32, 3, padding=1)
+        self.pool1 = nn.MaxPool1d(2)
+        self.conv2 = nn.Conv1d(32, 64, 3, padding=1)
+        self.pool2 = nn.MaxPool1d(2)
+        self.fc1 = nn.Linear(64 * (seq_len // 4), 64)
+        self.fc2 = nn.Linear(64, 2)
+
+    def forward(self, x):
+        x = self.pool1(torch.relu(self.conv1(x)))
+        x = self.pool2(torch.relu(self.conv2(x)))
+        x = x.view(x.size(0), -1)
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+</code></pre>
+  </div>
+
+  <span class="tag">3. Training Loop</span>
+  <div class="code-block">
+<pre><code>device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+dataset = EEGDataset()
+loader = DataLoader(dataset, batch_size=16, shuffle=True)
+model = EEGNet().to(device)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+loss_fn = nn.CrossEntropyLoss()
+
+for epoch in range(1, 6):
+    model.train()
+    total, correct = 0, 0
+    for signals, labels in loader:
+        signals, labels = signals.to(device), labels.to(device)
+        optimizer.zero_grad()
+        outputs = model(signals)
+        loss = loss_fn(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        total += labels.size(0)
+        correct += (outputs.argmax(1) == labels).sum().item()
+    print(f"Epoch {epoch}, Accuracy: {correct / total:.2f}")
+</code></pre>
+  </div>
+
+  <h2>📈 Result & Analysis</h2>
+  <p>
+    After just 5 epochs on the simulated dataset, the 1D CNN achieves decent classification accuracy. This validates the model's ability to distinguish EEG patterns using convolutional filters.
+  </p>
+  <p>
+    You can enhance performance by:
+    <ul>
+      <li>Using real EEG data (e.g., CHB-MIT)</li>
+      <li>Adding batch normalization and dropout</li>
+      <li>Exploring LSTM or Transformer-based architectures</li>
+    </ul>
+  </p>
+
+  <h2>🔗 Extensions</h2>
+  <ul>
+    <li>Real-time seizure detection systems</li>
+    <li>BCI (Brain-Computer Interface) applications</li>
+    <li>EEG-based emotion recognition</li>
+  </ul>
+</div>
+
+<footer>
+  © 2025 | EEG ML Project | Vivian Nguyen
+</footer>
+
+</body>
+</html>

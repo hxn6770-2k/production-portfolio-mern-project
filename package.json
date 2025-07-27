@@ -1,0 +1,19 @@
+{
+  "name": "mern-portfolio",
+  "version": "1.0.0",
+  "description": "porfolio app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "viviannguyen",
+  "license": "MIT",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^4.21.2",
+    "nodemailer": "^7.0.5",
+    "nodemailer-sendgrid-transport": "^0.2.0"
+  }
+}
